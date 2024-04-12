@@ -57,6 +57,23 @@
         .task input[type="checkbox"] {
             margin-right: 10px;
         }
+
+        /* Estilos para el calendario */
+        .task input[type="datetime-local"] {
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid #ff9dbd; /* Mismo color que el botón "Eliminar" */
+            background-color: white; /* Fondo blanco */
+            color: #ff9dbd; /* Texto rosa */
+            font-size: 16px;
+            transition: background-color 0.3s, color 0.3s;
+            margin-right: 10px;
+        }
+
+        .task input[type="datetime-local"]:hover {
+            background-color: #ff9dbd; /* Fondo rosa al pasar el mouse */
+            color: white; /* Texto blanco al pasar el mouse */
+        }
     </style>
 </head>
 <body>
@@ -66,12 +83,11 @@
         <input type="text" id="taskInput" placeholder="Agregar una nueva tarea">
         <button onclick="agregarTarea()">AÑADIR</button>
         <ul id="taskList"></ul>
-</div>
+    </div>
+
     <script>
-        // Array para almacenar las tareas
         let tareas = [];
 
-        // Función para agregar una nueva tarea
         function agregarTarea() {
             const entradaTarea = document.getElementById('taskInput');
             const textoTarea = entradaTarea.value.trim();
@@ -79,7 +95,9 @@
                 const nuevaTarea = {
                     id: Date.now(),
                     texto: textoTarea,
-                    completada: false
+                    completada: false,
+                    fechaInicio: obtenerFechaHoraActual(),
+                    fechaTermino: null
                 };
                 tareas.push(nuevaTarea);
                 renderizarTareas();
@@ -87,7 +105,16 @@
             }
         }
 
-        // Función para renderizar las tareas
+        function obtenerFechaHoraActual() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hour = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            return `${year}-${month}-${day}T${hour}:${minutes}`;
+        }
+
         function renderizarTareas() {
             const listaTareas = document.getElementById('taskList');
             listaTareas.innerHTML = '';
@@ -101,12 +128,13 @@
                     <input type="checkbox" ${tarea.completada ? 'checked' : ''} onchange="marcarTarea(${tarea.id}, this.checked)">
                     <input type="text" value="${tarea.texto}" ${tarea.completada ? 'disabled' : ''} onchange="actualizarTarea(${tarea.id}, this.value)">
                     <button onclick="eliminarTarea(${tarea.id})">Eliminar</button>
+                    <input type="datetime-local" id="fechaInicio_${tarea.id}" value="${tarea.fechaInicio}" onchange="actualizarFechaInicio(${tarea.id}, this.value)">
+                    <input type="datetime-local" id="fechaTermino_${tarea.id}" value="${tarea.fechaTermino || ''}" onchange="actualizarFechaTermino(${tarea.id}, this.value)">
                 `;
                 listaTareas.appendChild(li);
             });
         }
 
-        // Función para marcar una tarea como completada
         function marcarTarea(id, completada) {
             const tarea = tareas.find(tarea => tarea.id === id);
             if (tarea) {
@@ -115,23 +143,40 @@
             }
         }
 
-        // Función para actualizar una tarea
         function actualizarTarea(id, nuevoTexto) {
             const tarea = tareas.find(tarea => tarea.id === id);
             if (tarea) {
                 tarea.texto = nuevoTexto;
+                renderizarTareas();
             }
         }
 
-        // Función para eliminar una tarea
+        function actualizarFechaInicio(id, nuevaFechaInicio) {
+            const tarea = tareas.find(tarea => tarea.id === id);
+            if (tarea) {
+                tarea.fechaInicio = nuevaFechaInicio;
+            }
+        }
+
+        function actualizarFechaTermino(id, nuevaFechaTermino) {
+            const tarea = tareas.find(tarea => tarea.id === id);
+            if (tarea) {
+                const fechaActual = obtenerFechaHoraActual();
+                if (nuevaFechaTermino >= fechaActual) {
+                    tarea.fechaTermino = nuevaFechaTermino;
+                } else {
+                    alert("La fecha de finalización no puede ser anterior a la fecha y hora actual.");
+                    document.getElementById(`fechaTermino_${id}`).value = tarea.fechaTermino || '';
+                }
+            }
+        }
+
         function eliminarTarea(id) {
             tareas = tareas.filter(tarea => tarea.id !== id);
             renderizarTareas();
         }
 
-        // Renderizado inicial
         renderizarTareas();
     </script>
 </body>
 </html>
-
