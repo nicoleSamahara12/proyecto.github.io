@@ -11,12 +11,12 @@
             padding: 0;
             background-image: url("imagenes/fondo3.jpg");
         }
-        
+       
         .container {
             max-width: 800px;
             margin: 20px auto;
             padding: 20px;
-            background-color: #f7dada; 
+            background-color: #f7dada;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
         }
@@ -57,7 +57,7 @@
         .task input[type="checkbox"] {
             margin-right: 10px;
         }
-
+ 
         /* Estilos para el calendario */
         .task input[type="datetime-local"] {
             padding: 8px 15px;
@@ -69,7 +69,7 @@
             transition: background-color 0.3s, color 0.3s;
             margin-right: 10px;
         }
-
+ 
         .task input[type="datetime-local"]:hover {
             background-color: #ff9dbd; /* Fondo rosa al pasar el mouse */
             color: white; /* Texto blanco al pasar el mouse */
@@ -77,17 +77,17 @@
     </style>
 </head>
 <body>
-    
+   
     <div class="container">
         <h1>LISTA DE TAREAS</h1>
         <input type="text" id="taskInput" placeholder="Agregar una nueva tarea">
         <button onclick="agregarTarea()">AÑADIR</button>
         <ul id="taskList"></ul>
     </div>
-
+ 
     <script>
         let tareas = [];
-
+ 
         function agregarTarea() {
             const entradaTarea = document.getElementById('taskInput');
             const textoTarea = entradaTarea.value.trim();
@@ -104,7 +104,7 @@
                 entradaTarea.value = '';
             }
         }
-
+ 
         function obtenerFechaHoraActual() {
             const now = new Date();
             const year = now.getFullYear();
@@ -114,7 +114,7 @@
             const minutes = String(now.getMinutes()).padStart(2, '0');
             return `${year}-${month}-${day}T${hour}:${minutes}`;
         }
-
+ 
         function renderizarTareas() {
             const listaTareas = document.getElementById('taskList');
             listaTareas.innerHTML = '';
@@ -134,7 +134,7 @@
                 listaTareas.appendChild(li);
             });
         }
-
+ 
         function marcarTarea(id, completada) {
             const tarea = tareas.find(tarea => tarea.id === id);
             if (tarea) {
@@ -142,7 +142,7 @@
                 renderizarTareas();
             }
         }
-
+ 
         function actualizarTarea(id, nuevoTexto) {
             const tarea = tareas.find(tarea => tarea.id === id);
             if (tarea) {
@@ -150,14 +150,14 @@
                 renderizarTareas();
             }
         }
-
+ 
         function actualizarFechaInicio(id, nuevaFechaInicio) {
             const tarea = tareas.find(tarea => tarea.id === id);
             if (tarea) {
                 tarea.fechaInicio = nuevaFechaInicio;
             }
         }
-
+ 
         function actualizarFechaTermino(id, nuevaFechaTermino) {
             const tarea = tareas.find(tarea => tarea.id === id);
             if (tarea) {
@@ -170,12 +170,12 @@
                 }
             }
         }
-
+ 
         function eliminarTarea(id) {
             tareas = tareas.filter(tarea => tarea.id !== id);
             renderizarTareas();
         }
-
+ 
         renderizarTareas();
     </script>
 </body>
